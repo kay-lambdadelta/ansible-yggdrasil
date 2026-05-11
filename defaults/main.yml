@@ -1,21 +1,17 @@
 yggdrasil_generate_configuration: yes
-yggdrasil_manage_configuration: no
-yggdrasil_config_path: /etc/yggdrasil.conf
-
-# yggdrasil_private_key:
-
+yggdrasil_manage_configuration: yes
+yggdrasil_config_path: /etc/yggdrasil/yggdrasil.conf
 yggdrasil_peers: []
 yggdrasil_interface_peers: {}
 yggdrasil_listen: []
-yggdrasil_admin_listen: unix:///var/run/yggdrasil.sock
+yggdrasil_admin_listen: unix:///var/run/yggdrasil/yggdrasil.sock
 yggdrasil_multicast_interfaces:
   - Regex: .*
     Beacon: true
     Listen: true
-    Port: 0
+    Port: 9001
 yggdrasil_allowed_public_keys: []
 yggdrasil_if_name: auto
 yggdrasil_if_mtu: 65535
-
-yggdrasil_node_info_privacy: no
+yggdrasil_node_info_privacy: yes
 yggdrasil_node_info: {}

@@ -1,4 +1,0 @@
-- name: Enable RPM repository
-  ansible.builtin.command:
-    cmd: dnf copr enable neilalexander/yggdrasil-go -y
-    creates: /etc/yum.repos.d/_copr:copr.fedorainfracloud.org:neilalexander:yggdrasil-go.repo

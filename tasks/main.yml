@@ -1,19 +1,6 @@
 - tags:
     - install
   block:
-    - include_tasks: "repositories_debian.yml"
-      when: ansible_os_family == "Debian"
-
-    - include_tasks: "repositories_redhat.yml"
-      when: ansible_os_family == "RedHat"
-
-    - name: Create yggdrasil group
-      group:
-        name: yggdrasil
-        system: yes
-        state: present
-      when: ansible_os_family == "RedHat"
-
     - name: Install package
       package:
         name: yggdrasil
@@ -22,6 +9,19 @@
 - tags:
     - configure
   block:
+    - name: Read private key from existing config
+      block:
+        - slurp:
+            src: "{{ yggdrasil_config_path }}"
+          register: yggdrasil_existing_config
+        - set_fact:
+            yggdrasil_private_key: >-
+              {{ yggdrasil_existing_config.content | b64decode |
+                 regex_search('PrivateKey:\s*"?([0-9a-f]+)"?', '\1') | first }}
+      when:
+        - yggdrasil_manage_configuration
+        - yggdrasil_private_key is not defined
+
     - name: Generate automatic configuration
       shell: yggdrasil -genconf > "{{ yggdrasil_config_path }}"
       args:
@@ -33,6 +33,8 @@
       template:
         dest: "{{ yggdrasil_config_path }}"
         src: yggdrasil.conf.j2
+        owner: yggdrasil
+        group: yggdrasil
         mode: 0600
       when: yggdrasil_manage_configuration
       notify: restart yggdrasil
